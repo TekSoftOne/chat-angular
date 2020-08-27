@@ -10,7 +10,6 @@ export class AppComponent {
   title = 'chat-angular';
   password: string;
   email: string;
-  openSideNav = false;
   public onSubmit(form: NgForm): void {
     if (form.valid) {
       console.log('submitted success!');

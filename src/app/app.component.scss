@@ -14,3 +14,22 @@ mat-form-field {
 #form-login {
   flex: 1;
 }
+
+.ts-menu {
+  list-style: none;
+
+  a {
+    text-decoration: none;
+    color: white;
+  }
+}
+
+mat-sidenav-container,
+mat-sidenav,
+mat-sidenav-content {
+  height: 100%;
+}
+
+mat-sidenav {
+  width: 250px;
+}
