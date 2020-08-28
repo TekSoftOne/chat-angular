@@ -8,21 +8,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './material.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { SignupComponent } from './auth/signup/signup.component';
-import { LoginComponent } from './auth/login/login.component';
-import { HomeComponent } from './home/home.component';
-import { NavigationHeaderComponent } from './navigations/navigation-header.component';
-import { NavigationListComponent } from './navigations/navigation-list.component';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    SignupComponent,
-    LoginComponent,
-    HomeComponent,
-    NavigationHeaderComponent,
-    NavigationListComponent,
-  ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     MaterialModule,

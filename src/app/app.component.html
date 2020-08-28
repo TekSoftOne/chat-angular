@@ -1,11 +1,79 @@
 <mat-sidenav-container>
   <mat-sidenav #sideNav role="navigation">
-    <app-navigation-list (navClose)="sideNav.close()"></app-navigation-list>
+    <mat-nav-list>
+      <a mat-list-item routerLink="/">Home</a>
+      <a mat-list-item routerLink="/login">Login</a>
+      <a mat-list-item routerLink="/logout">Logout</a>
+    </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
-    <app-navigation-header
-      (sideNavToggle)="sideNav.toggle()"
-    ></app-navigation-header>
-    <router-outlet></router-outlet>
+    <mat-toolbar color="primary">
+      <div fxHide.gt-xs>
+        <button mat-icon-button (click)="sideNav.toggle()">
+          <mat-icon>menu</mat-icon>
+        </button>
+      </div>
+      <div>LOGO</div>
+      <div fxFlex fxLayoutAlign="flex-end" fxHide.xs>
+        <ul fxLayout class="ts-menu" fxLayoutGap="10px">
+          <li><a routerLink="/">Home</a></li>
+          <li><a routerLink="/login">Login</a></li>
+          <li><a routerLink="/logout">Logout</a></li>
+        </ul>
+      </div>
+    </mat-toolbar>
+    <main>
+      <router-outlet></router-outlet>
+    </main>
   </mat-sidenav-content>
 </mat-sidenav-container>
+
+<div class="contain-wrapper">
+  <form
+    id="form-login"
+    fxLayout="column"
+    #f="ngForm"
+    (ngSubmit)="onSubmit(f)"
+    fxLayoutAlign="center center"
+    fxLayoutGap="10px"
+  >
+    <mat-form-field>
+      <input
+        matInput
+        color="accent"
+        #email="ngModel"
+        ngModel
+        name="email"
+        placeholder="Your Email"
+        type="email"
+        email
+        required
+      />
+      <mat-hint>Please input your email</mat-hint>
+      <mat-error *ngIf="email.hasError('required')"
+        >Email must not be empty</mat-error
+      >
+      <mat-error *ngIf="!email.hasError('required')"
+        >Email is invalid</mat-error
+      >
+    </mat-form-field>
+    <mat-form-field hintLabel="Should be at least 6 characters">
+      <input
+        matInput
+        #password
+        ngModel
+        name="password"
+        color="accent"
+        placeholder="Your Password"
+        type="password"
+        required
+        minlength="6"
+      />
+      <mat-hint align="end">{{ password.value?.length }} / 6</mat-hint>
+      <!-- <mat-error>Password is required</mat-error> -->
+    </mat-form-field>
+    <button mat-raised-button id="submitButton" color="primary" type="submit">
+      Submit
+    </button>
+  </form>
+</div>
