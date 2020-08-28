@@ -6,15 +6,20 @@
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,
+    "strict": true,
+    "strictPropertyInitialization": false,
     "downlevelIteration": true,
     "experimentalDecorators": true,
     "moduleResolution": "node",
     "importHelpers": true,
     "target": "es2015",
     "module": "es2020",
-    "lib": [
-      "es2018",
-      "dom"
-    ]
+    "lib": ["es2018", "dom"],
+    "typeRoots": ["node_modules/@types"],
+    "angularCompilerOptions": {
+      "preserveWhitespaces": false,
+      "strictInjectionParameters": true,
+      "fullTemplateTypeCheck": true
+    }
   }
 }

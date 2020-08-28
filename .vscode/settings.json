@@ -3,9 +3,10 @@
     "source.fixAll.tslint": true
   },
   // Set the default
-  "editor.formatOnSave": true,
+  "editor.formatOnSave": false,
   // // Enable per-language
   // "[javascript, typescript]": {
   //     "editor.formatOnSave": true
   // }
+  "javascript.implicitProjectConfig.experimentalDecorators": true,
 }
