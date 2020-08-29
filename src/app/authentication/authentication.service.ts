@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { UserToken } from './interface';
+import { UserToken, WINDOW } from './interface';
 import { tap, catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
@@ -11,7 +11,12 @@ import { Router } from '@angular/router';
 export class AuthenticationService {
   private readonly USERTOKEN = 'TSCHAT_USER';
   private readonly httpOptions = {};
-  constructor(private httpClient: HttpClient, private router: Router) {}
+  private readonly REDIRECT_LOGOUT = '/';
+  constructor(
+    private httpClient: HttpClient,
+    private router: Router,
+    @Inject(WINDOW) private window: Window
+  ) {}
 
   public login(userName: string, password: string): Observable<UserToken> {
     return this.httpClient
@@ -28,7 +33,7 @@ export class AuthenticationService {
 
   public logout(): void {
     localStorage.removeItem(this.USERTOKEN);
-    this.router.navigate(['home']);
+    this.window.open(this.REDIRECT_LOGOUT, '_self');
   }
 
   public loginSilently(): UserToken | null {
