@@ -17,6 +17,9 @@ import { AuthenticationService } from './authentication/authentication.service';
 import { HttpClientModule } from '@angular/common/http';
 import { AuthGuard } from './authentication/auth-guard';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { AngularFireModule } from 'angularfire2';
+import { environment } from '../environments/environment';
+import { AngularFirestoreModule } from 'angularfire2/firestore';
 @NgModule({
   declarations: [
     AppComponent,
@@ -35,6 +38,8 @@ import { DashboardComponent } from './dashboard/dashboard.component';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
+    AngularFireModule.initializeApp(environment.firebase, 'chat-api'),
+    AngularFirestoreModule,
   ],
   providers: [AuthenticationService, AuthGuard],
   bootstrap: [AppComponent],

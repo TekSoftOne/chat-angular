@@ -1,1 +1,3 @@
-<p>dashboard works!</p>
+<div *ngIf="messages | async as messagesAll">
+  <div *ngFor="let message of messagesAll">{{ message.Content }}</div>
+</div>
