@@ -13,7 +13,10 @@ import { LoginComponent } from './authentication/login/login.component';
 import { HomeComponent } from './home/home.component';
 import { NavigationHeaderComponent } from './navigations/navigation-header.component';
 import { NavigationListComponent } from './navigations/navigation-list.component';
-
+import { AuthenticationService } from './authentication/authentication.service';
+import { HttpClientModule } from '@angular/common/http';
+import { AuthGuard } from './authentication/auth-guard';
+import { DashboardComponent } from './dashboard/dashboard.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -22,6 +25,7 @@ import { NavigationListComponent } from './navigations/navigation-list.component
     HomeComponent,
     NavigationHeaderComponent,
     NavigationListComponent,
+    DashboardComponent,
   ],
   imports: [
     BrowserModule,
@@ -30,8 +34,9 @@ import { NavigationListComponent } from './navigations/navigation-list.component
     FlexLayoutModule,
     FormsModule,
     ReactiveFormsModule,
+    HttpClientModule,
   ],
-  providers: [],
+  providers: [AuthenticationService, AuthGuard],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
