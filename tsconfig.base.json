@@ -15,11 +15,6 @@
     "target": "es2015",
     "module": "es2020",
     "lib": ["es2018", "dom"],
-    "typeRoots": ["node_modules/@types"],
-    "angularCompilerOptions": {
-      "preserveWhitespaces": false,
-      "strictInjectionParameters": true,
-      "fullTemplateTypeCheck": true
-    }
+    "typeRoots": ["node_modules/@types"]
   }
 }
