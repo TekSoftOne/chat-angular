@@ -8,13 +8,30 @@
       <div fxFlex></div>
       <div class="chat-input">
         <mat-divider></mat-divider>
-        <form fxLayout fxLayoutGap="5px" class="chat-form">
+        <form
+          fxLayout
+          fxLayoutGap="5px"
+          #fChat
+          class="chat-form"
+          (ngSubmit)="sendMessage()"
+        >
           <mat-form-field fxFlex>
             <mat-label>Enter your message</mat-label>
-            <input type="text" matInput />
+            <input
+              type="text"
+              matInput
+              [(ngModel)]="message"
+              name="messageBox"
+            />
           </mat-form-field>
-          <button mat-icon-button id="chat-message-box" color="light">
-            <mat-icon color="accent">send</mat-icon>
+          <button
+            [disabled]="message.length === 0"
+            type="submit"
+            mat-icon-button
+            id="chat-message-box"
+            color="accent"
+          >
+            <mat-icon>send</mat-icon>
           </button>
         </form>
       </div>
