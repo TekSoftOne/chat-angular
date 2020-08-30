@@ -1,3 +1,23 @@
-<div *ngIf="messages | async as messagesAll">
+<!-- <div *ngIf="messages | async as messagesAll">
   <div *ngFor="let message of messagesAll">{{ message.Content }}</div>
-</div>
+</div> -->
+<section id="chat-board" fxLayout fxFlexFill id="chat-content">
+  <div fxFlex="30" fxFlex.sm="0" class="chat-pane" id="chat-left"></div>
+  <div fxFlex="70" fxFlex.sm="100" class="chat-pane" id="chat-right">
+    <div fxFlexFill fxLayout="column">
+      <div fxFlex></div>
+      <div class="chat-input">
+        <mat-divider></mat-divider>
+        <form fxLayout fxLayoutGap="5px" class="chat-form">
+          <mat-form-field fxFlex>
+            <mat-label>Enter your message</mat-label>
+            <input type="text" matInput />
+          </mat-form-field>
+          <button mat-icon-button id="chat-message-box" color="light">
+            <mat-icon color="accent">send</mat-icon>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
