@@ -2,8 +2,8 @@
   <div *ngFor="let message of messagesAll">{{ message.Content }}</div>
 </div> -->
 <section id="chat-board" fxLayout fxFlexFill id="chat-content">
-  <div fxFlex="30" fxFlex.sm="0" class="chat-pane" id="chat-left"></div>
-  <div fxFlex="70" fxFlex.sm="100" class="chat-pane" id="chat-right">
+  <div fxFlex="30" fxFlex.lt-sm="0" class="chat-pane" id="chat-left"></div>
+  <div fxFlex="70" fxFlex.lt-sm="100" class="chat-pane" id="chat-right">
     <div fxFlexFill fxLayout="column">
       <div fxFlex>
         <div id="list-messages">
@@ -14,21 +14,23 @@
               fxLayoutGap="10px"
               class="message-item incomming-message"
             >
-              <div fxLayout="row" fxLayoutGap="5px">
+              <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="flex-end">
                 <img
                   class="avatar"
                   alt="image"
-                  src="https://wms-test.cidlicensor.com/Uploads/admin_avatar.png"
+                  src="https://source.unsplash.com/random/700x700?technology"
                 />
                 <div fxLayout="column" fxLayoutGap="5px">
                   <h5 class="name">teksoft1</h5>
                   <div class="time">10:20 AM</div>
                 </div>
               </div>
-              <div class="message-content">Good morning!!</div>
+              <div class="message-content">
+                Good morning!! This is awesome, man, how is it going
+              </div>
             </div>
           </div>
-          <div>
+          <div fxLayout="row">
             <div
               fxLayout="column"
               fxLayoutGap="10px"
@@ -38,7 +40,7 @@
                 <img
                   class="avatar"
                   alt="image"
-                  src="https://wms-test.cidlicensor.com/Uploads/admin_avatar.png"
+                  src="https://source.unsplash.com/random/701x701?technology"
                 />
                 <div fxLayout="column" fxLayoutGap="5px">
                   <h5 class="name">teksoft1</h5>
@@ -47,6 +49,7 @@
               </div>
               <div class="message-content">Hi, how are you</div>
             </div>
+            <div></div>
           </div>
         </div>
       </div>

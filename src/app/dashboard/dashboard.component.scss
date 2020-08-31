@@ -11,17 +11,13 @@
   margin: 20px;
 }
 
-figure.avatar {
-  width: 2.3rem;
-  height: 2.3rem;
-}
-
 .message-item {
   //height: 100px;
   margin: 20px;
   .avatar {
     width: 2.3rem;
     height: 2.3rem;
+    border-radius: 5px;
   }
 
   h5 {
@@ -37,4 +33,12 @@ figure.avatar {
 
 .incomming-message {
   margin-left: auto;
+  padding-left: 20px;
+}
+
+.message-content {
+  background-color: #0a80ff;
+  padding: 20px;
+  border-radius: 5px;
+  color: white;
 }
