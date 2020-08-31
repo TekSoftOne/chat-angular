@@ -1,19 +1,23 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AngularFirestore } from 'angularfire2/firestore';
-import { Observable, Subscriber, of, throwError } from 'rxjs';
+import { Observable, Subscriber, of, throwError, Subscription } from 'rxjs';
 import { NgForm } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { catchError, tap } from 'rxjs/operators';
-
+import { Message } from './interface';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   public messages: Observable<any>;
   public message = '';
+
   private readonly COLLECTION_NAME = 'messages';
+  private sendMessageSubscription: Subscription;
+  private loadMessageSubscription: Subscription;
+
   constructor(private db: AngularFirestore, private httpClient: HttpClient) {}
 
   ngOnInit(): void {
@@ -34,9 +38,19 @@ export class DashboardComponent implements OnInit {
       ();
   }
 
+  ngOnDestroy(): void {
+    if (this.sendMessageSubscription) {
+      this.sendMessageSubscription.unsubscribe();
+    }
+
+    if (this.loadMessageSubscription) {
+      this.loadMessageSubscription.unsubscribe();
+    }
+  }
+
   public sendMessage(): Observable<boolean> {
     if (this.message.length > 0) {
-      this.saveMessage()
+      this.sendMessageSubscription = this.saveMessage()
         .pipe(
           catchError((error) => {
             console.log('send error');
@@ -56,16 +70,14 @@ export class DashboardComponent implements OnInit {
     return new Observable<void>((subscriber) => {
       this.db
         .collection(this.COLLECTION_NAME)
-        .doc('1')
-        .collection(moment.getFullYear().toString())
-        .doc((moment.getMonth() + 1).toString())
-        .collection(moment.getDate().toString())
+        .doc('2')
+        .collection('1')
         .add({
           content: this.message,
-          dateTime: moment,
-          senderId: '1',
+          at: moment,
+          attachment: '',
           read: false,
-        })
+        } as Message)
         .then(() => {
           subscriber.next();
           subscriber.complete();

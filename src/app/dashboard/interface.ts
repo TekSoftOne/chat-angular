@@ -1,6 +1,6 @@
 export interface Message {
   content: string;
-  dateTime: Date;
+  at: Date;
   read: boolean;
-  senderId: string;
+  attachment: string;
 }
