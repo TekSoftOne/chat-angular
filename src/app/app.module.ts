@@ -20,6 +20,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { AngularFireModule } from 'angularfire2';
 import { environment } from '../environments/environment';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
+import { MessagesComponent } from './messages/messages.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -29,6 +30,7 @@ import { AngularFirestoreModule } from 'angularfire2/firestore';
     NavigationHeaderComponent,
     NavigationListComponent,
     DashboardComponent,
+    MessagesComponent,
   ],
   imports: [
     BrowserModule,

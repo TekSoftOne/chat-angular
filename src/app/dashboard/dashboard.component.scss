@@ -10,3 +10,31 @@
 .chat-form {
   margin: 20px;
 }
+
+figure.avatar {
+  width: 2.3rem;
+  height: 2.3rem;
+}
+
+.message-item {
+  //height: 100px;
+  margin: 20px;
+  .avatar {
+    width: 2.3rem;
+    height: 2.3rem;
+  }
+
+  h5 {
+    &.name {
+      margin: 0px;
+    }
+  }
+}
+
+.time {
+  font-size: 0.8rem;
+}
+
+.incomming-message {
+  margin-left: auto;
+}
