@@ -60,7 +60,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
       .valueChanges();
 
     this.messages = combineLatest([incommingMessages, outgoingMessages]).pipe(
-      map(([i, o]) => [...i, ...o])
+      map(([i, o]) => [...i, ...o]),
+      tap(() => {
+        setTimeout(() => {
+          this.scrollToBottom();
+        }, 1);
+      })
     );
   }
 
@@ -83,8 +88,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             return throwError(error);
           }),
           tap(() => (this.message = '')),
-          tap(() => console.log('send success!')),
-          tap(() => this.scrollToBottom())
+          tap(() => console.log('send success!'))
         )
         .subscribe();
     }
@@ -97,8 +101,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     return new Observable<void>((subscriber) => {
       this.db
         .collection(this.COLLECTION_NAME)
-        .doc('2')
-        .collection('1')
+        .doc(this.currentUser)
+        .collection(this.me)
         .add({
           senderId: this.me,
           content: this.message,
