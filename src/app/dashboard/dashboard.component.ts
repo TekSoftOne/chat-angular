@@ -1,9 +1,17 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AngularFirestore } from 'angularfire2/firestore';
-import { Observable, Subscriber, of, throwError, Subscription } from 'rxjs';
+import {
+  Observable,
+  Subscriber,
+  of,
+  throwError,
+  Subscription,
+  combineLatest,
+  forkJoin,
+} from 'rxjs';
 import { NgForm } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError, tap, map, merge } from 'rxjs/operators';
 import { Message } from './interface';
 @Component({
   selector: 'app-dashboard',
@@ -17,25 +25,26 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private readonly COLLECTION_NAME = 'messages';
   private sendMessageSubscription: Subscription;
   private loadMessageSubscription: Subscription;
-
+  public me = '1';
+  public currentUser = '2';
   constructor(private db: AngularFirestore, private httpClient: HttpClient) {}
 
   ngOnInit(): void {
-    this.messages = this.db
-      .collection('messages')
-      .doc('1')
-      .collection('2020')
-      .doc('08')
-      .collection('29')
-      .valueChanges()
-      .pipe
-      // map((querySnapshot) => {
-      // tslint:disable-next-line: max-line-length
-      // return querySnapshot.map((message: DocumentData, index: number) => {
-      //   return message;
-      // });
-      // })
-      ();
+    const incommingMessages = this.db
+      .collection(this.COLLECTION_NAME)
+      .doc(this.me)
+      .collection(this.currentUser)
+      .valueChanges();
+
+    const outgoingMessages = this.db
+      .collection(this.COLLECTION_NAME)
+      .doc(this.currentUser)
+      .collection(this.me)
+      .valueChanges();
+
+    this.messages = combineLatest([incommingMessages, outgoingMessages]).pipe(
+      map(([i, o]) => [...i, ...o])
+    );
   }
 
   ngOnDestroy(): void {
@@ -73,10 +82,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
         .doc('2')
         .collection('1')
         .add({
+          senderId: this.me,
           content: this.message,
           at: moment,
           attachment: '',
           read: false,
+          receiverId: this.currentUser,
         } as Message)
         .then(() => {
           subscriber.next();
