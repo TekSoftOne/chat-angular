@@ -21,6 +21,13 @@ import { AngularFireModule } from 'angularfire2';
 import { environment } from '../environments/environment';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { MessageComponent } from './messages/message.component';
+import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
+import { PERFECT_SCROLLBAR_CONFIG } from 'ngx-perfect-scrollbar';
+import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
+
+const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
+  suppressScrollX: true,
+};
 @NgModule({
   declarations: [
     AppComponent,
@@ -42,8 +49,16 @@ import { MessageComponent } from './messages/message.component';
     HttpClientModule,
     AngularFireModule.initializeApp(environment.firebase, 'chat-api'),
     AngularFirestoreModule,
+    PerfectScrollbarModule,
   ],
-  providers: [AuthenticationService, AuthGuard],
+  providers: [
+    AuthenticationService,
+    AuthGuard,
+    {
+      provide: PERFECT_SCROLLBAR_CONFIG,
+      useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG,
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

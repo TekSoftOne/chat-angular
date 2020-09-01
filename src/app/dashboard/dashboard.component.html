@@ -5,16 +5,19 @@
   <div fxFlex="30" fxFlex.lt-sm="0" class="chat-pane" id="chat-left"></div>
   <div fxFlex="70" fxFlex.lt-sm="100" class="chat-pane" id="chat-right">
     <div fxFlexFill fxLayout="column">
-      <div fxFlex class="messages-list">
-        <ng-container *ngIf="messages | async as userMessages">
-          <app-message
-            *ngFor="let userMessage of userMessages"
-            class=""
-            [content]="userMessage.content"
-            [type]="userMessage.receiverId === '1' ? 'incoming' : 'outgoing'"
-          ></app-message>
-        </ng-container>
-      </div>
+      <perfect-scrollbar [config]="config">
+        <div fxFlex class="messages-list" #chatPanel>
+          <ng-container *ngIf="messages | async as userMessages">
+            <app-message
+              *ngFor="let userMessage of userMessages"
+              class=""
+              [content]="userMessage.content"
+              [type]="userMessage.receiverId === '1' ? 'incoming' : 'outgoing'"
+            ></app-message>
+          </ng-container>
+        </div>
+      </perfect-scrollbar>
+
       <div class="chat-input">
         <mat-divider></mat-divider>
         <form

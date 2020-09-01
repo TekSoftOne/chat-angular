@@ -1,4 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ViewChild,
+  ElementRef,
+} from '@angular/core';
 import { AngularFirestore } from 'angularfire2/firestore';
 import {
   Observable,
@@ -13,14 +19,25 @@ import { NgForm } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { catchError, tap, map, merge } from 'rxjs/operators';
 import { Message } from './interface';
+import * as $ from 'jquery';
+import {
+  PerfectScrollbarConfigInterface,
+  PerfectScrollbarComponent,
+} from 'ngx-perfect-scrollbar';
+
+// declare const $: any;
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit, OnDestroy {
+  @ViewChild('chatPanel') chatPanel: ElementRef;
+  @ViewChild(PerfectScrollbarComponent, { static: false })
+  componentRef: PerfectScrollbarComponent;
   public messages: Observable<any>;
   public message = '';
+  public config: PerfectScrollbarConfigInterface = {};
 
   private readonly COLLECTION_NAME = 'messages';
   private sendMessageSubscription: Subscription;
@@ -66,7 +83,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
             return throwError(error);
           }),
           tap(() => (this.message = '')),
-          tap(() => console.log('send success!'))
+          tap(() => console.log('send success!')),
+          tap(() => this.scrollToBottom())
         )
         .subscribe();
     }
@@ -95,5 +113,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
         })
         .catch((err) => subscriber.error(err));
     });
+  }
+
+  public scrollToBottom(): void {
+    if (this.componentRef && this.componentRef.directiveRef) {
+      this.componentRef.directiveRef.scrollToBottom();
+    }
   }
 }

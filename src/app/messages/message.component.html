@@ -4,7 +4,11 @@
     fxLayoutGap="10px"
     [ngClass]="{ 'incoming-message': type === 'incoming' ? true : false }"
   >
-    <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="flex-end">
+    <div
+      fxLayout="row"
+      fxLayoutGap="5px"
+      [fxLayoutAlign]="type === 'incoming' ? 'flex-end' : 'flex-start'"
+    >
       <img
         class="avatar"
         alt="image"
