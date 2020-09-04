@@ -2,7 +2,11 @@
   <div *ngFor="let message of messagesAll">{{ message.Content }}</div>
 </div> -->
 <section id="chat-board" fxLayout fxFlexFill id="chat-content">
-  <div fxFlex="30" fxFlex.lt-sm="0" class="chat-pane" id="chat-left"></div>
+  <div fxFlex="30" fxFlex.lt-sm="0" class="chat-pane" id="chat-left">
+    <div *ngFor="let user of userList$ | async">
+      <div (click)="selectedUser$.next(user.guid)">{{ user.guid }}</div>
+    </div>
+  </div>
   <div fxFlex="70" fxFlex.lt-sm="100" class="chat-pane" id="chat-right">
     <div fxFlexFill fxLayout="column">
       <perfect-scrollbar [config]="config">
@@ -12,7 +16,9 @@
               *ngFor="let userMessage of userMessages"
               class=""
               [content]="userMessage.content"
-              [type]="userMessage.receiverId === '1' ? 'incoming' : 'outgoing'"
+              [type]="
+                userMessage.senderId === agentGUID ? 'incoming' : 'outgoing'
+              "
             ></app-message>
           </ng-container>
         </div>

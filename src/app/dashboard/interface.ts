@@ -4,3 +4,9 @@ export interface Message {
   read: boolean;
   attachment: string;
 }
+
+export interface User {
+  guid: string;
+  name: string;
+  image: string;
+}
