@@ -3,8 +3,32 @@
 </div> -->
 <section id="chat-board" fxLayout fxFlexFill id="chat-content">
   <div fxFlex="30" fxFlex.lt-sm="0" class="chat-pane" id="chat-left">
-    <div *ngFor="let user of userList$ | async">
-      <div (click)="selectedUser$.next(user.guid)">{{ user.guid }}</div>
+    <div
+      *ngFor="let user of userList$ | async"
+      fxLayout="row"
+      fxLayoutGap="10px"
+      [ngClass]="{
+        'user-selected': user.guid === selectedUserId ? true : false
+      }"
+      (click)="selectedUser$.next(user.guid)"
+      class="user-line"
+    >
+      <div>
+        <img
+          style="width: 40px"
+          src="https://source.unsplash.com/random/700x700?animal"
+          alt=""
+        />
+      </div>
+      <div>
+        <div fxLayout="column">
+          <span class="user-name">
+            {{ user.guid.substring(0, 8) }}
+          </span>
+          <span class="user-last-message latest">allo</span>
+          <span class="user-last-access">2020/12/10 10:90AM</span>
+        </div>
+      </div>
     </div>
   </div>
   <div fxFlex="70" fxFlex.lt-sm="100" class="chat-pane" id="chat-right">
@@ -16,6 +40,11 @@
               *ngFor="let userMessage of userMessages"
               class=""
               [content]="userMessage.content"
+              [receiverId]="userMessage.receiverId"
+              [senderId]="userMessage.senderId"
+              [me]="agentGUID"
+              [at]="userMessage.at"
+              [showTime]="userMessage.showTime"
               [type]="
                 userMessage.senderId === agentGUID ? 'incoming' : 'outgoing'
               "

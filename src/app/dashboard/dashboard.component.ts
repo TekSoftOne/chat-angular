@@ -15,6 +15,7 @@ import {
   combineLatest,
   forkJoin,
   BehaviorSubject,
+  observable,
 } from 'rxjs';
 import { NgForm } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -25,6 +26,7 @@ import {
   PerfectScrollbarConfigInterface,
   PerfectScrollbarComponent,
 } from 'ngx-perfect-scrollbar';
+import { DatePipe } from '@angular/common';
 
 // declare const $: any;
 @Component({
@@ -41,6 +43,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   public config: PerfectScrollbarConfigInterface = {};
 
   private readonly COLLECTION_MESSAGE = 'messages';
+  private readonly COLLECTION_ACTIVE_AGENTS = 'activeAgents';
   private readonly CLIENT_ID = '9245fe4a-d402-451c-b9ed-9c1a04247482';
   private sendMessageSubscription: Subscription;
   private loadMessageSubscription: Subscription;
@@ -48,10 +51,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
   public currentUser = '2';
   public agentGUID = '6245fe4a-d402-451c-b9ed-9c1a04247482';
   public selectedUser$: BehaviorSubject<string | undefined>;
-  private selectedUserId: '';
+  public selectedUserId: '';
+  private lastAccessShortTime: string | null;
   public userList$: Observable<User[]>;
+  public saveLastAccessSubscription: Subscription;
 
-  constructor(private db: AngularFirestore) {}
+  constructor(private db: AngularFirestore, private datePipe: DatePipe) {}
 
   ngOnInit(): void {
     this.selectedUser$ = new BehaviorSubject<string | undefined>(undefined);
@@ -66,9 +71,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         return users.find((x) => (x.guid = selected));
       }),
       tap((user) => {
-        if (user) {
-          this.selectedUserId = user.guid;
-        }
+        this.selectedUserId = user?.guid;
       })
     );
 
@@ -88,42 +91,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
           return [];
         }
 
-        const incommingMessages = this.db
-          .collection('clients')
-          .doc(this.COLLECTION_MESSAGE)
-          .collection(this.CLIENT_ID)
-          .doc(this.agentGUID)
-          .collection(user.guid)
-          .valueChanges();
-
-        const outgoingMessages = this.db
-          .collection('clients')
-          .doc(this.COLLECTION_MESSAGE)
-          .collection(this.CLIENT_ID)
-          .doc(user.guid)
-          .collection(this.agentGUID)
-          .valueChanges();
-
-        return combineLatest([incommingMessages, outgoingMessages]).pipe(
-          map(([i, o]) => {
-            const messages = [...i, ...o] as Message[];
-            return messages.sort((m1, m2) => {
-              if (m1.at > m2.at) {
-                return 1;
-              } else if (m1.at < m2.at) {
-                return -1;
-              }
-              return 0;
-            });
-          }),
-          tap(() => {
-            setTimeout(() => {
-              this.scrollToBottom();
-            }, 1);
-          })
-        );
+        return this.getAllMessages(user);
       })
     );
+  }
+
+  private getLastAccessShortTime(accessTime: Date): string | null {
+    return this.datePipe.transform(accessTime, 'shortTime');
   }
 
   ngOnDestroy(): void {
@@ -134,6 +108,47 @@ export class DashboardComponent implements OnInit, OnDestroy {
     if (this.loadMessageSubscription) {
       this.loadMessageSubscription.unsubscribe();
     }
+
+    if (this.saveLastAccessSubscription) {
+      this.saveLastAccessSubscription.unsubscribe();
+    }
+  }
+
+  private getAllMessages(user: User): Observable<Message[]> {
+    const incommingMessages = this.db
+      .collection('clients')
+      .doc(this.COLLECTION_MESSAGE)
+      .collection(this.CLIENT_ID)
+      .doc(this.agentGUID)
+      .collection(user.guid)
+      .valueChanges();
+
+    const outgoingMessages = this.db
+      .collection('clients')
+      .doc(this.COLLECTION_MESSAGE)
+      .collection(this.CLIENT_ID)
+      .doc(user.guid)
+      .collection(this.agentGUID)
+      .valueChanges();
+
+    return combineLatest([incommingMessages, outgoingMessages]).pipe(
+      map(([i, o]) => {
+        const messages = [...i, ...o] as Message[];
+        return messages.sort((m1, m2) => {
+          if (m1.at > m2.at) {
+            return 1;
+          } else if (m1.at < m2.at) {
+            return -1;
+          }
+          return 0;
+        });
+      }),
+      tap(() => {
+        setTimeout(() => {
+          this.scrollToBottom();
+        }, 1);
+      })
+    );
   }
 
   public sendMessage(): Observable<boolean> {
@@ -144,6 +159,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
             console.log('send error');
             return throwError(error);
           }),
+          tap(
+            () =>
+              (this.saveLastAccessSubscription = this.saveLastAccess().subscribe())
+          ),
+          tap(
+            () =>
+              (this.lastAccessShortTime = this.getLastAccessShortTime(
+                new Date()
+              ))
+          ),
           tap(() => (this.message = '')),
           tap(() => console.log('send success!'))
         )
@@ -163,6 +188,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   private saveMessage(): Observable<void> {
     const moment = new Date();
+
     return new Observable<void>((subscriber) => {
       this.db
         .collection('clients')
@@ -177,12 +203,35 @@ export class DashboardComponent implements OnInit, OnDestroy {
           attachment: '',
           read: false,
           receiverId: this.selectedUserId,
+          showTime:
+            this.getLastAccessShortTime(moment) !== this.lastAccessShortTime,
         } as Message)
         .then(() => {
           subscriber.next();
           subscriber.complete();
         })
         .catch((err) => subscriber.error(err));
+    });
+  }
+
+  private saveLastAccess(): Observable<Date> {
+    const moment = new Date();
+    return new Observable((observer) => {
+      this.db
+        .collection('clients')
+        .doc(this.COLLECTION_ACTIVE_AGENTS)
+        .collection(this.CLIENT_ID)
+        .doc(this.agentGUID)
+        .update({
+          guid: this.agentGUID,
+          lastAccess: moment,
+          lastMessage: this.message,
+        })
+        .then(() => {
+          observer.next(moment);
+          observer.complete();
+        })
+        .catch((err) => observer.error(err));
     });
   }
 

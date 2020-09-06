@@ -10,6 +10,11 @@ export class MessageComponent implements OnInit {
 
   @Input() content: string;
   @Input() type = 'outcoming'; // incoming
+  @Input() senderId: string;
+  @Input() receiverId: string;
+  @Input() me: string;
+  @Input() at: any;
+  @Input() showTime: boolean;
 
   ngOnInit(): void {}
 }
