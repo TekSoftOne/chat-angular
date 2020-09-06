@@ -7,6 +7,6 @@ export interface Message {
 
 export interface User {
   guid: string;
-  name: string;
-  image: string;
+  lastAccess: Date;
+  lastMessage: string;
 }

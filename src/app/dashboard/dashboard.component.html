@@ -25,8 +25,11 @@
           <span class="user-name">
             {{ user.guid.substring(0, 8) }}
           </span>
-          <span class="user-last-message latest">allo</span>
-          <span class="user-last-access">2020/12/10 10:90AM</span>
+          <span class="user-last-message latest">{{ user.lastMessage }}</span>
+          <span class="user-last-access"
+            >{{ user.lastAccess | date: "mediumDate" }}
+            {{ user.lastAccess | date: "shortTime" }}</span
+          >
         </div>
       </div>
     </div>

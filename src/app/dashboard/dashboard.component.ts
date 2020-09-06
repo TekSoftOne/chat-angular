@@ -77,11 +77,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     this.userList$ = activeUsers.pipe(
       map((users) =>
-        users.map((u) => ({
-          guid: u.guid,
-          name: 'user',
-          image: 'https://via.placeholder.com/150',
-        }))
+        users
+          .map((u) => ({
+            guid: u.guid,
+            lastAccess: u.lastAccess.toDate(),
+            lastMessage: u.lastMessage,
+          }))
+          .sort((m1, m2) => {
+            if (m1.lastAccess < m2.lastMessage) {
+              return 1;
+            } else if (m1.lastAccess > m2.lastAccess) {
+              return -1;
+            }
+            return 0;
+          })
       )
     );
 
