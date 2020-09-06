@@ -19,7 +19,7 @@
 .user-line {
   padding: 20px 10px;
 
-  .user-selected {
+  &.user-selected {
     background-color: #eaeaea;
   }
 
